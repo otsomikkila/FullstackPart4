@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const dummy = (blogs) => {
   //console.log(blogs)
   return 1
@@ -26,8 +28,25 @@ const favoriteBlog = (blogs) => {
   return { 'title': result.title, 'author': result.author, 'likes': result.likes }
 }
 
+//make a hashmap that has person and amount
+//transform hashmap into list of pairs
+//sort the pairs
+const mostBlogs = (blogs) => {
+
+  const groupedByAuthor = _.groupBy(blogs, 'author')
+
+  const authorCounts = _.map(groupedByAuthor, (value, key) => ({
+    author: key,
+    blogs: value.length,
+  }))
+  const mostBlogs = _.maxBy(authorCounts, 'blogs')
+  //console.log(mostBlogs)
+  return mostBlogs
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
