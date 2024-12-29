@@ -34,7 +34,7 @@ test('unique identifier is named id', async () => {
   assert.strictEqual(response.body.every(n => n.id), true)
 })
 
-test.only('a valid blog can be added ', async () => {
+test('a valid blog can be added ', async () => {
   const newBlog = {
     title: 'blogi 6',
     author: 'Jonne',
@@ -54,6 +54,24 @@ test.only('a valid blog can be added ', async () => {
 
   assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
   assert(titles.includes('blogi 6'))
+})
+
+test.only('if likes is missing a default of 0 is added', async () => {
+  const newBlog = {
+    title: 'blogi 7',
+    author: 'Janne',
+    url: 'moi/24as'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.filter(n => n.title === 'blogi 7')[0].likes, 0)
 })
 
 after(async () => {
