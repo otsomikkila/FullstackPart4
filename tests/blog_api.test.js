@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -56,7 +56,7 @@ test('a valid blog can be added ', async () => {
   assert(titles.includes('blogi 6'))
 })
 
-test.only('if likes is missing a default of 0 is added', async () => {
+test('if likes is missing a default of 0 is added', async () => {
   const newBlog = {
     title: 'blogi 7',
     author: 'Janne',
@@ -72,6 +72,33 @@ test.only('if likes is missing a default of 0 is added', async () => {
   const response = await api.get('/api/blogs')
 
   assert.strictEqual(response.body.filter(n => n.title === 'blogi 7')[0].likes, 0)
+})
+
+describe.only('Status code 400 is returned if blog does not contain title or url', async () => {
+  test('missing title', async () => {
+    const newBlog = {
+      author: 'Janne',
+      url: 'moi/24as',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
+  test('missing url', async () => {
+    const newBlog = {
+      title: 'here it is',
+      author: 'Janne',
+      likes: 2
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
 after(async () => {
