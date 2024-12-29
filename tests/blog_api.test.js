@@ -28,10 +28,32 @@ test('there are two blogs', async () => {
   assert.strictEqual(response.body.length, 2)
 })
 
-test.only('unique identifier is named id', async () => {
+test('unique identifier is named id', async () => {
   const response = await api.get('/api/blogs')
 
   assert.strictEqual(response.body.every(n => n.id), true)
+})
+
+test.only('a valid blog can be added ', async () => {
+  const newBlog = {
+    title: 'blogi 6',
+    author: 'Jonne',
+    url: 'moi/2423',
+    likes: 40
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const titles = response.body.map(n => n.title)
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
+  assert(titles.includes('blogi 6'))
 })
 
 after(async () => {
