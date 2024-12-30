@@ -74,7 +74,7 @@ test('if likes is missing a default of 0 is added', async () => {
   assert.strictEqual(response.body.filter(n => n.title === 'blogi 7')[0].likes, 0)
 })
 
-describe.only('Status code 400 is returned if blog does not contain title or url', async () => {
+describe('Status code 400 is returned if blog is', async () => {
   test('missing title', async () => {
     const newBlog = {
       author: 'Janne',
@@ -99,6 +99,22 @@ describe.only('Status code 400 is returned if blog does not contain title or url
       .send(newBlog)
       .expect(400)
   })
+})
+
+test.only('deleting a node', async () => {
+  const response = await api.get('/api/blogs')
+  const id = response.body[0].id
+
+  //correct response code
+  await api.delete(`/api/blogs/${id}`).expect(204)
+  //blog not in list
+  const newResponce = await api.get('/api/blogs')
+  const blogsAtEnd = newResponce.body
+
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+  const titles = blogsAtEnd.map(n => n.title)
+  assert(!titles.includes('mitähän'))
+  //add a way to check if the note is deleted from the db
 })
 
 after(async () => {
