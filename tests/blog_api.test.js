@@ -101,7 +101,7 @@ describe('Status code 400 is returned if blog is', async () => {
   })
 })
 
-test.only('deleting a node', async () => {
+test('deleting a node', async () => {
   const response = await api.get('/api/blogs')
   const id = response.body[0].id
 
@@ -115,6 +115,31 @@ test.only('deleting a node', async () => {
   const titles = blogsAtEnd.map(n => n.title)
   assert(!titles.includes('mitähän'))
   //add a way to check if the note is deleted from the db
+})
+
+describe.only('updating the blog should', async () => {
+  //console.log(workingBlog)
+  const workingBlog =
+    {
+      'title': 'blogi 2',
+      'author': 'Otso',
+      'url': 'moi/2',
+      'likes': 45
+    }
+
+  test('work with correct blog', async () => {
+    const response = await api.get('/api/blogs')
+    const blogToChange = response.body[0]
+
+    const putResponse = await api.put(`/api/blogs/${blogToChange.id}`).send(workingBlog).expect(200)
+    assert.deepStrictEqual(workingBlog,
+      {
+        title: putResponse.body.title,
+        author: putResponse.body.author,
+        url: putResponse.body.url,
+        likes: putResponse.body.likes
+      })
+  })
 })
 
 after(async () => {
