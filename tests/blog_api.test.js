@@ -117,7 +117,7 @@ test('deleting a node', async () => {
   //add a way to check if the note is deleted from the db
 })
 
-describe.only('updating the blog should', async () => {
+describe('updating the blog should', async () => {
   //console.log(workingBlog)
   const workingBlog =
     {
